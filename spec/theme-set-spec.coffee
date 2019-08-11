@@ -5,6 +5,13 @@ ThemeSet = require '../lib/theme-set'
 # To run a specific `it` or `describe` block add an `f` to the front (e.g. `fit`
 # or `fdescribe`). Remove the `f` to unfocus the block.
 
+Array::is = (o) ->
+  return true if this is o
+  return false if this.length isnt o.length
+  for i in [0..this.length]
+    return false if this[i] isnt o[i]
+  true
+
 describe "ThemeSet", ->
   [workspaceElement, activationPromise] = []
 
@@ -12,51 +19,95 @@ describe "ThemeSet", ->
     workspaceElement = atom.views.getView(atom.workspace)
     activationPromise = atom.packages.activatePackage('theme-set')
 
-  describe "when the theme-set:toggle event is triggered", ->
-    it "hides and shows the modal panel", ->
-      # Before the activation event the view is not on the DOM, and no panel
-      # has been created
-      expect(workspaceElement.querySelector('.theme-set')).not.toExist()
-
-      # This is an activation event, triggering it will cause the package to be
-      # activated.
-      atom.commands.dispatch workspaceElement, 'theme-set:toggle'
+  describe "when the theme-set:activate-dark-theme event is triggered", ->
+    it "sets the theme to dark mode", ->
+      # start by automatically activating light theme
+      atom.commands.dispatch workspaceElement, "theme-set:activate-light-theme"
 
       waitsForPromise ->
         activationPromise
 
       runs ->
-        expect(workspaceElement.querySelector('.theme-set')).toExist()
+        atom.commands.dispatch workspaceElement, 'theme-set:activate-dark-theme'
+        expect(atom.config.get('core.themes').is \
+          ['one-dark-ui', 'one-dark-syntax']).toBe true
+        expect(atom.config.get('markdown-preview-enhanced.codeBlockTheme') \
+          == 'one-dark.css').toBe true
+        expect(atom.config.get('markdown-preview-enhanced.previewTheme') \
+          == 'one-dark.css').toBe true
 
-        themeSetElement = workspaceElement.querySelector('.theme-set')
-        expect(themeSetElement).toExist()
-
-        themeSetPanel = atom.workspace.panelForItem(themeSetElement)
-        expect(themeSetPanel.isVisible()).toBe true
-        atom.commands.dispatch workspaceElement, 'theme-set:toggle'
-        expect(themeSetPanel.isVisible()).toBe false
-
-    it "hides and shows the view", ->
-      # This test shows you an integration test testing at the view level.
-
-      # Attaching the workspaceElement to the DOM is required to allow the
-      # `toBeVisible()` matchers to work. Anything testing visibility or focus
-      # requires that the workspaceElement is on the DOM. Tests that attach the
-      # workspaceElement to the DOM are generally slower than those off DOM.
-      jasmine.attachToDOM(workspaceElement)
-
-      expect(workspaceElement.querySelector('.theme-set')).not.toExist()
-
-      # This is an activation event, triggering it causes the package to be
-      # activated.
-      atom.commands.dispatch workspaceElement, 'theme-set:toggle'
+    it "sets the activeTheme string to 'dark'", ->
+      # start by automatically activating light theme
+      atom.commands.dispatch workspaceElement, "theme-set:activate-light-theme"
 
       waitsForPromise ->
         activationPromise
 
       runs ->
-        # Now we can test for view visibility
-        themeSetElement = workspaceElement.querySelector('.theme-set')
-        expect(themeSetElement).toBeVisible()
-        atom.commands.dispatch workspaceElement, 'theme-set:toggle'
-        expect(themeSetElement).not.toBeVisible()
+        atom.commands.dispatch workspaceElement, 'theme-set:activate-dark-theme'
+        expect(atom.config.get('theme-set.activeTheme')).toBe 'dark'
+
+
+  describe "when the theme-set:activate-light-theme event is triggered", ->
+    it "sets the theme to light mode", ->
+      # start by automatically activating dark mode
+      atom.commands.dispatch workspaceElement, "theme-set:activate-dark-theme"
+
+      waitsForPromise ->
+        activationPromise
+
+      runs ->
+        atom.commands.dispatch workspaceElement, 'theme-set:activate-light-theme'
+        expect(atom.config.get('core.themes').is \
+          ['one-light-ui', 'solarized-light-syntax']).toBe true
+        expect(atom.config.get('markdown-preview-enhanced.codeBlockTheme') \
+          == 'solarized-light.css').toBe true
+        expect(atom.config.get('markdown-preview-enhanced.previewTheme') \
+          == 'solarized-light.css').toBe true
+
+    it "sets the activeTheme string to 'light'", ->
+      # start by automatically activating dark mode
+      atom.commands.dispatch workspaceElement, "theme-set:activate-dark-theme"
+
+      waitsForPromise ->
+        activationPromise
+
+      runs ->
+        atom.commands.dispatch workspaceElement, 'theme-set:activate-light-theme'
+        expect(atom.config.get("theme-set.activeTheme")).toBe "light"
+
+  describe "when the theme-set:toggle-theme event is triggered", ->
+    it "switches from light mode to dark mode", ->
+      atom.commands.dispatch workspaceElement, 'theme-set:activate-light-theme'
+
+      waitsForPromise ->
+        activationPromise
+
+      runs ->
+        atom.commands.dispatch workspaceElement, 'theme-set:activate-light-theme'
+        atom.commands.dispatch workspaceElement, 'theme-set:toggle-theme'
+        expect(atom.config.get('core.themes').is \
+          ['one-dark-ui', 'one-dark-syntax']).toBe true
+        expect(atom.config.get('markdown-preview-enhanced.codeBlockTheme') \
+          == 'one-dark.css').toBe true
+        expect(atom.config.get('markdown-preview-enhanced.previewTheme') \
+          == 'one-dark.css').toBe true
+        expect(atom.config.get("theme-set.activeTheme")).toBe "dark"
+
+    it "switches from dark mode to light mode", ->
+      atom.commands.dispatch workspaceElement, 'theme-set:activate-dark-theme'
+
+      waitsForPromise ->
+        activationPromise
+
+      runs ->
+
+        atom.commands.dispatch workspaceElement, 'theme-set:activate-dark-theme'
+        atom.commands.dispatch workspaceElement, 'theme-set:toggle-theme'
+        expect(atom.config.get('core.themes').is \
+          ['one-light-ui', 'solarized-light-syntax']).toBe true
+        expect(atom.config.get('markdown-preview-enhanced.codeBlockTheme') \
+          == 'solarized-light.css').toBe true
+        expect(atom.config.get('markdown-preview-enhanced.previewTheme') \
+          == 'solarized-light.css').toBe true
+        expect(atom.config.get("theme-set.activeTheme")).toBe "light"
