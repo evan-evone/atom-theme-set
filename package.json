@@ -5,7 +5,7 @@
   "description": "A simple package for managing a light and dark theme",
   "keywords": [],
   "activationCommands": {},
-  "repository": "https://github.com/atom/theme-set",
+  "repository": "https://github.com/evan-evone/atom-theme-set",
   "license": "MIT",
   "engines": {
     "atom": ">=1.0.0 <2.0.0"
