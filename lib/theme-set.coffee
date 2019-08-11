@@ -1,33 +1,47 @@
-ThemeSetView = require './theme-set-view'
 {CompositeDisposable} = require 'atom'
 
-module.exports = ThemeSet =
-  themeSetView: null
-  modalPanel: null
+module.exports =
+ThemeSet =
   subscriptions: null
 
   activate: (state) ->
-    @themeSetView = new ThemeSetView(state.themeSetViewState)
-    @modalPanel = atom.workspace.addModalPanel(item: @themeSetView.getElement(), visible: false)
-
-    # Events subscribed to in atom's system can be easily cleaned up with a CompositeDisposable
+    # Events subscribed to in atom's system
+    # can be easily cleaned up with a CompositeDisposable
     @subscriptions = new CompositeDisposable
 
-    # Register command that toggles this view
-    @subscriptions.add atom.commands.add 'atom-workspace', 'theme-set:toggle': => @toggle()
+    # Register the "activate" and "toggle" commands
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'theme-set:activate-dark-theme': => @activateDarkTheme()
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'theme-set:activate-light-theme': => @activateLightTheme()
+    @subscriptions.add atom.commands.add 'atom-workspace',
+      'theme-set:toggle-theme': => @toggleTheme()
 
   deactivate: ->
-    @modalPanel.destroy()
     @subscriptions.dispose()
-    @themeSetView.destroy()
 
-  serialize: ->
-    themeSetViewState: @themeSetView.serialize()
+  activateDarkTheme: ->
+    console.log('Activating dark theme')
+    darkTheme = atom.config.get("theme-set.darkTheme")
+    atom.config.set("core.themes", ["one-dark-ui", "one-dark-syntax"])
+    atom.config.set("markdown-preview-enhanced.codeBlockTheme", "one-dark.css")
+    atom.config.set("markdown-preview-enhanced.previewTheme", "one-dark.css")
+    atom.config.set("theme-set.activeTheme", "dark")
 
-  toggle: ->
-    console.log 'ThemeSet was toggled!'
+  activateLightTheme: ->
+    console.log('Activating light theme')
+    atom.config.set("core.themes", ["one-light-ui", "solarized-light-syntax"])
+    atom.config.set("markdown-preview-enhanced.codeBlockTheme", "solarized-light.css")
+    atom.config.set("markdown-preview-enhanced.previewTheme", "solarized-light.css")
+    atom.config.set("theme-set.activeTheme", "light")
 
-    if @modalPanel.isVisible()
-      @modalPanel.hide()
+  toggleTheme: ->
+    workspaceElement = atom.views.getView(atom.workspace)
+    activeTheme = atom.config.get("theme-set.activeTheme")
+    console.log("Active Theme: #{activeTheme}")
+    if activeTheme == "dark"
+      atom.commands.dispatch workspaceElement, "theme-set:activate-light-theme"
+    else if activeTheme == "light"
+      atom.commands.dispatch workspaceElement, "theme-set:activate-dark-theme"
     else
-      @modalPanel.show()
+      atom.commands.dispatch workspaceElement, "theme-set:activate-dark-theme"

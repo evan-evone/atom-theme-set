@@ -2,8 +2,16 @@
 'context-menu':
   'atom-text-editor': [
     {
-      'label': 'Toggle theme-set'
-      'command': 'theme-set:toggle'
+      'label': 'Activate Dark Theme'
+      'command': 'theme-set:activate-dark-theme'
+    }
+    {
+      'label': 'Activate Light Theme'
+      'command': 'theme-set:activate-light-theme'
+    }
+    {
+      'label': 'Toggle Theme'
+      'command': 'theme-set:toggle-theme'
     }
   ]
 'menu': [
@@ -13,8 +21,16 @@
       'label': 'theme-set'
       'submenu': [
         {
-          'label': 'Toggle'
-          'command': 'theme-set:toggle'
+          'label': 'Activate Dark Theme'
+          'command': 'theme-set:activate-dark-theme'
+        }
+        {
+          'label': 'Activate Light Theme'
+          'command': 'theme-set:activate-light-theme'
+        }
+        {
+          'label': 'Toggle Theme'
+          'command': 'theme-set:toggle-theme'
         }
       ]
     ]

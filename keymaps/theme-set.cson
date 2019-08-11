@@ -8,4 +8,6 @@
 # For more detailed documentation see
 # https://atom.io/docs/latest/behind-atom-keymaps-in-depth
 'atom-workspace':
-  'ctrl-alt-o': 'theme-set:toggle'
+  'ctrl-alt-l':'theme-set:activate-light-theme'
+  'ctrl-alt-k':'theme-set:activate-dark-theme'
+  'ctrl-alt-t':'theme-set:toggle-theme'
