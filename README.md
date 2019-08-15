@@ -4,7 +4,7 @@ A simple package for managing a light and dark theme. Describe each theme with
 the appropriate key/value pairs, and then either activate a specific theme or
 toggle between the themes.
 
-![A screenshot of the package](assets/example.gif)
+![A screenshot of the package](https://github.com/evan-evone/atom-theme-set/blob/v0.2.0/assets/example.gif?raw=true)
 
 ## Customization
 All customization is done through the `config.cson` file. There are two objects
