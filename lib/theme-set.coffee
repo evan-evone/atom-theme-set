@@ -1,4 +1,4 @@
-{CompositeDisposable} = require 'atom'
+{CompositeDisposable} = require "atom"
 
 module.exports =
 ThemeSet =
@@ -10,29 +10,26 @@ ThemeSet =
     @subscriptions = new CompositeDisposable
 
     # Register the "activate" and "toggle" commands
-    @subscriptions.add atom.commands.add 'atom-workspace',
-      'theme-set:activate-dark-theme': => @activateDarkTheme()
-    @subscriptions.add atom.commands.add 'atom-workspace',
-      'theme-set:activate-light-theme': => @activateLightTheme()
-    @subscriptions.add atom.commands.add 'atom-workspace',
-      'theme-set:toggle-theme': => @toggleTheme()
+    @subscriptions.add atom.commands.add "atom-workspace",
+      "theme-set:activate-dark-theme": => @activateDarkTheme()
+    @subscriptions.add atom.commands.add "atom-workspace",
+      "theme-set:activate-light-theme": => @activateLightTheme()
+    @subscriptions.add atom.commands.add "atom-workspace",
+      "theme-set:toggle-theme": => @toggleTheme()
 
   deactivate: ->
     @subscriptions.dispose()
 
   activateDarkTheme: ->
-    console.log('Activating dark theme')
+    console.log("Activating dark theme")
     darkTheme = atom.config.get("theme-set.darkTheme")
-    atom.config.set("core.themes", ["one-dark-ui", "one-dark-syntax"])
-    atom.config.set("markdown-preview-enhanced.codeBlockTheme", "one-dark.css")
-    atom.config.set("markdown-preview-enhanced.previewTheme", "one-dark.css")
+    atom.config.set(key, darkTheme[key]) for own key of darkTheme
     atom.config.set("theme-set.activeTheme", "dark")
 
   activateLightTheme: ->
-    console.log('Activating light theme')
-    atom.config.set("core.themes", ["one-light-ui", "solarized-light-syntax"])
-    atom.config.set("markdown-preview-enhanced.codeBlockTheme", "solarized-light.css")
-    atom.config.set("markdown-preview-enhanced.previewTheme", "solarized-light.css")
+    console.log("Activating light theme")
+    lightTheme = atom.config.get("theme-set.lightTheme")
+    atom.config.set(key, lightTheme[key]) for own key of lightTheme
     atom.config.set("theme-set.activeTheme", "light")
 
   toggleTheme: ->
@@ -45,3 +42,17 @@ ThemeSet =
       atom.commands.dispatch workspaceElement, "theme-set:activate-dark-theme"
     else
       atom.commands.dispatch workspaceElement, "theme-set:activate-dark-theme"
+config:
+  activeTheme:
+    type: "string"
+    default: "dark"
+  darkTheme:
+    "core.themes": [
+      "one-dark-ui"
+      "one-dark-syntax"
+    ]
+  lightTheme:
+    "core.themes": [
+      "one-light-ui"
+      "solarized-light-syntax"
+    ]

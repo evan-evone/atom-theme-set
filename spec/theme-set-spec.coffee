@@ -29,12 +29,9 @@ describe "ThemeSet", ->
 
       runs ->
         atom.commands.dispatch workspaceElement, 'theme-set:activate-dark-theme'
-        expect(atom.config.get('core.themes').is \
-          ['one-dark-ui', 'one-dark-syntax']).toBe true
-        expect(atom.config.get('markdown-preview-enhanced.codeBlockTheme') \
-          == 'one-dark.css').toBe true
-        expect(atom.config.get('markdown-preview-enhanced.previewTheme') \
-          == 'one-dark.css').toBe true
+        darkTheme = atom.config.get("theme-set.darkTheme")
+        for own key of darkTheme
+          do expect(atom.config.get(key) == darkTheme[key]).toBe true
 
     it "sets the activeTheme string to 'dark'", ->
       # start by automatically activating light theme
@@ -58,12 +55,9 @@ describe "ThemeSet", ->
 
       runs ->
         atom.commands.dispatch workspaceElement, 'theme-set:activate-light-theme'
-        expect(atom.config.get('core.themes').is \
-          ['one-light-ui', 'solarized-light-syntax']).toBe true
-        expect(atom.config.get('markdown-preview-enhanced.codeBlockTheme') \
-          == 'solarized-light.css').toBe true
-        expect(atom.config.get('markdown-preview-enhanced.previewTheme') \
-          == 'solarized-light.css').toBe true
+        lightTheme = atom.config.get("theme-set.lightTheme")
+        for own key of lightTheme
+          do expect(atom.config.get(key) == lightTheme[key]).toBe true
 
     it "sets the activeTheme string to 'light'", ->
       # start by automatically activating dark mode
@@ -86,13 +80,9 @@ describe "ThemeSet", ->
       runs ->
         atom.commands.dispatch workspaceElement, 'theme-set:activate-light-theme'
         atom.commands.dispatch workspaceElement, 'theme-set:toggle-theme'
-        expect(atom.config.get('core.themes').is \
-          ['one-dark-ui', 'one-dark-syntax']).toBe true
-        expect(atom.config.get('markdown-preview-enhanced.codeBlockTheme') \
-          == 'one-dark.css').toBe true
-        expect(atom.config.get('markdown-preview-enhanced.previewTheme') \
-          == 'one-dark.css').toBe true
-        expect(atom.config.get("theme-set.activeTheme")).toBe "dark"
+        darkTheme = atom.config.get("theme-set.darkTheme")
+        for own key of darkTheme
+          do expect(atom.config.get(key) == darkTheme[key]).toBe true
 
     it "switches from dark mode to light mode", ->
       atom.commands.dispatch workspaceElement, 'theme-set:activate-dark-theme'
@@ -104,10 +94,6 @@ describe "ThemeSet", ->
 
         atom.commands.dispatch workspaceElement, 'theme-set:activate-dark-theme'
         atom.commands.dispatch workspaceElement, 'theme-set:toggle-theme'
-        expect(atom.config.get('core.themes').is \
-          ['one-light-ui', 'solarized-light-syntax']).toBe true
-        expect(atom.config.get('markdown-preview-enhanced.codeBlockTheme') \
-          == 'solarized-light.css').toBe true
-        expect(atom.config.get('markdown-preview-enhanced.previewTheme') \
-          == 'solarized-light.css').toBe true
-        expect(atom.config.get("theme-set.activeTheme")).toBe "light"
+        lightTheme = atom.config.get("theme-set.lightTheme")
+        for own key of lightTheme
+          do expect(atom.config.get(key) == lightTheme[key]).toBe true
